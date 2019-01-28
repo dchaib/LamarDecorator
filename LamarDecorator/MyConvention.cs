@@ -1,6 +1,8 @@
 ﻿using Lamar;
+using Lamar.IoC.Instances;
 using Lamar.Scanning;
 using Lamar.Scanning.Conventions;
+using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
 namespace LamarDecorator
@@ -21,7 +23,8 @@ namespace LamarDecorator
                     if (cachedType != null && cachedType.GetInterfaces().Any(t => t.Name == "I" + type.Name))
                     {
                         // There is a version with cache, register this type
-                        //services.For(@interface).Use(cachedType).Ctor(@interface).Is(type);
+                        services.For(@interface).Use(cachedType)
+                            .AddInline(new ConstructorInstance(@interface, type, ServiceLifetime.Transient));
                     }
                     else
                     {
